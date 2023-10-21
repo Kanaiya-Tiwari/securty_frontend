@@ -1,0 +1,12 @@
+import {Link}
+
+function Home(){
+return (
+<div>
+<Link to ="">Admin</Link>
+<Link>Cutomer</Link>
+)
+
+}
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';

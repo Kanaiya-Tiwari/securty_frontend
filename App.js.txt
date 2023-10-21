@@ -1,0 +1,18 @@
+import React from 'react';
+import {  Routes, Route } from 'react-router-dom';
+
+import Customer from './Customer';
+import Admin from './Admin';
+
+const App = () => {
+  return (
+      <Routes>
+      <Route path="/" element={<Home/>}/>
+        <Route path="/customer"element={<Customer/>} />
+        <Route path="/admin" element={<Admin/>} />
+     </Routes>
+    
+  );
+};
+
+export default App;

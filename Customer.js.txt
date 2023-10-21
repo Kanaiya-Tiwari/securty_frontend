@@ -1,0 +1,101 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const Customer = () => {
+  const [customers, setCustomers] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [senderId, setSenderId] = useState('');
+  const [recipientId, setRecipientId] = useState('');
+  const [amount, setAmount] = useState('');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // Fetch customers and transactions from the backend
+    axios.get('http://localhost:5000/customers')
+      .then(response => {
+        setCustomers(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    axios.get('http://localhost:5000/transactions')
+      .then(response => {
+        setTransactions(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleTransfer = () => {
+    // Perform transfer request to the backend
+    axios.post('http://localhost:5000/transfer', {
+      senderId,
+      recipientId,
+      amount
+    })
+      .then(response => {
+        setMessage(response.data.message);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  return (
+    <div>
+      <h1>Customer Interface</h1>
+      <h2>Transfer Funds</h2>
+      <label>
+        Sender:
+        <select value={senderId} onChange={(e) => setSenderId(e.target.value)}>
+          <option value="">Select Sender</option>
+          {customers.map(customer => (
+            <option key={customer.id} value={customer.id}>{customer.name}</option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Recipient:
+        <select value={recipientId} onChange={(e) => setRecipientId(e.target.value)}>
+          <option value="">Select Recipient</option>
+          {customers.map(customer => (
+            <option key={customer.id} value={customer.id}>{customer.name}</option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Amount:
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </label>
+      <button onClick={handleTransfer}>Transfer</button>
+      <p>{message}</p>
+      <h2>Transaction History</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>Sender</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+          </tr>
+          {transactions.map(transaction => (
+            <tr key={transaction.timestamp}>
+              <td>{transaction.senderId}</td>
+              <td>{transaction.recipientId}</td>
+              <td>{transaction.amount}</td>
+              <td>{transaction.timestamp}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default Customer;
